@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* JetBrains Mono font configuration */
+.font-jetbrains {
+  font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+}
