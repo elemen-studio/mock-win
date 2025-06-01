@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { IPhoneMockup } from "@/components/iphone-mockup";
 import { Video } from "@/components/video";
 import { ColorPickerSidebar } from "@/components/color-picker-sidebar";
+import { SocialsSection } from "@/components/socials-section";
 import { FileControls } from "@/components/file-controls";
 import { Logo } from "@/components/logo";
 import { useScreenRecorder } from "@/hooks/use-recording";
@@ -11,7 +12,7 @@ function App() {
   const [currentVideoSrc, setCurrentVideoSrc] = useState("/ss.mp4");
   const [areSidebarsVisible, setAreSidebarsVisible] = useState(true);
   const [backgroundColor, setBackgroundColor] = useState("#ffffff");
-  
+
   const appRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -67,9 +68,9 @@ function App() {
   return (
     <>
       {/* Fixed Progress Bar Overlay */}
-      <RecordingProgress 
-        progress={recordingProgress.progress} 
-        isRecording={recordingProgress.isRecording} 
+      <RecordingProgress
+        progress={recordingProgress.progress}
+        isRecording={recordingProgress.isRecording}
       />
 
       {/* Main App */}
@@ -78,11 +79,17 @@ function App() {
         className="h-screen px-10 py-10 overflow-hidden"
         style={{ background: backgroundColor }}
       >
-        <div className={`h-full grid ${areSidebarsVisible ? 'grid-cols-[300px_1fr_300px]' : 'grid-cols-[1fr]'} gap-4 lg:gap-8 items-start justify-center`}>
+        <div
+          className={`h-full grid ${
+            areSidebarsVisible
+              ? "grid-cols-[300px_1fr_300px]"
+              : "grid-cols-[1fr]"
+          } gap-4 lg:gap-8 items-start justify-center`}
+        >
           {/* Left Sidebar - Color Picker */}
           {areSidebarsVisible && (
-            <div className="flex flex-col">
-              <div className="h-10 mb-4">
+            <div className="flex flex-col space-y-4">
+              <div className="h-10">
                 <Logo />
               </div>
               <div className="w-full lg:w-auto flex justify-center lg:justify-start">
@@ -105,15 +112,18 @@ function App() {
 
           {/* Right Sidebar - File Controls */}
           {areSidebarsVisible && (
-            <div className="flex flex-col items-end">
+            <div className="flex flex-col items-end space-y-4">
               {/* Spacer to match logo height + gap */}
               <div className="h-14"></div>
-              <div className="w-full lg:w-auto flex justify-end">
-                <FileControls 
-                  onVideoSelect={handleVideoSelect} 
+              <div className="w-80">
+                <FileControls
+                  onVideoSelect={handleVideoSelect}
                   onExport={exportRecording}
                   recordingProgress={recordingProgress}
                 />
+              </div>
+              <div className="w-80">
+                <SocialsSection />
               </div>
             </div>
           )}
