@@ -30,3 +30,6 @@ You are an expert in TypeScript, Node.js, React, and Tailwind.
   UI and Styling
   - Use Tailwind for components and styling.
   - Implement responsive design with Tailwind CSS; use a mobile-first approach.
+
+  Installing
+  - Use package manager that is in the project: pnpm is preferred.

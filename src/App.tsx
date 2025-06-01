@@ -1,14 +1,36 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IPhoneMockup } from "@/components/iphone-mockup";
 import { Video } from "@/components/video";
 import { ColorPickerSidebar } from "@/components/color-picker-sidebar";
 import { FileControls } from "@/components/file-controls";
 import { Logo } from "@/components/logo";
+import { RecordingProgress } from "@/components/recording-progress";
+import { useScreenRecorder } from "@/hooks/use-screen-recorder";
+
+// Import the VideoCanvasRef type
+type VideoCanvasRef = {
+  play: () => Promise<void>
+  pause: () => void
+  currentTime: number
+  duration: number
+  paused: boolean
+  videoWidth: number
+  videoHeight: number
+}
 
 function App() {
   const [currentVideoSrc, setCurrentVideoSrc] = useState("/ss.mp4");
   const [areSidebarsVisible, setAreSidebarsVisible] = useState(true);
   const [backgroundColor, setBackgroundColor] = useState("#ffffff");
+
+  const appContainerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<VideoCanvasRef>(null);
+
+  const { exportRecording, isRecording, progress } = useScreenRecorder({
+    appContainerRef,
+    videoRef,
+    setAreSidebarsVisible,
+  });
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
@@ -54,47 +76,56 @@ function App() {
   };
 
   return (
-    <div
-      className="h-screen px-10 py-10 overflow-hidden"
-      style={{ backgroundColor }}
-    >
-      <div className={`h-full grid ${areSidebarsVisible ? 'grid-cols-[300px_1fr_300px]' : 'grid-cols-[1fr]'} gap-4 lg:gap-8 items-start justify-center`}>
-        {/* Left Sidebar - Color Picker */}
-        {areSidebarsVisible && (
-          <div className="flex flex-col">
-            <div className="h-10 mb-4">
-              <Logo />
+    <>
+      {/* Recording Progress Bar - Outside the recorded area */}
+      <RecordingProgress progress={progress} isRecording={isRecording} />
+      
+      <div
+        ref={appContainerRef}
+        className="h-screen px-10 py-10 overflow-hidden"
+        style={{ backgroundColor }}
+      >
+        <div className={`h-full grid ${areSidebarsVisible ? 'grid-cols-[300px_1fr_300px]' : 'grid-cols-[1fr]'} gap-4 lg:gap-8 items-start justify-center`}>
+          {/* Left Sidebar - Color Picker */}
+          {areSidebarsVisible && (
+            <div className="flex flex-col">
+              <div className="h-10 mb-4">
+                <Logo />
+              </div>
+              <div className="w-full lg:w-auto flex justify-center lg:justify-start">
+                <ColorPickerSidebar
+                  onColorSelect={handleColorSelect}
+                  selectedColor={backgroundColor}
+                />
+              </div>
             </div>
-            <div className="w-full lg:w-auto flex justify-center lg:justify-start">
-              <ColorPickerSidebar
-                onColorSelect={handleColorSelect}
-                selectedColor={backgroundColor}
-              />
-            </div>
-          </div>
-        )}
+          )}
 
-        {/* Main Content Area - iPhone Mockup */}
-        <div className="flex justify-center items-center">
-          <div className="w-full max-w-sm max-h-[90vh]">
-            <IPhoneMockup className="w-full h-auto max-h-full">
-              <Video src={currentVideoSrc} />
-            </IPhoneMockup>
+          {/* Main Content Area - iPhone Mockup */}
+          <div className="flex justify-center items-center">
+            <div className="w-full max-w-sm max-h-[90vh]">
+              <IPhoneMockup className="w-full h-auto max-h-full">
+                <Video ref={videoRef} src={currentVideoSrc} />
+              </IPhoneMockup>
+            </div>
           </div>
+
+          {/* Right Sidebar - File Controls */}
+          {areSidebarsVisible && (
+            <div className="flex flex-col items-end">
+              {/* Spacer to match logo height + gap */}
+              <div className="h-14"></div>
+              <div className="w-full lg:w-auto flex justify-end">
+                <FileControls 
+                  onVideoSelect={handleVideoSelect} 
+                  onExport={exportRecording}
+                />
+              </div>
+            </div>
+          )}
         </div>
-
-        {/* Right Sidebar - File Controls */}
-        {areSidebarsVisible && (
-          <div className="flex flex-col items-end">
-            {/* Spacer to match logo height + gap */}
-            <div className="h-14"></div>
-            <div className="w-full lg:w-auto flex justify-end">
-              <FileControls onVideoSelect={handleVideoSelect} />
-            </div>
-          </div>
-        )}
       </div>
-    </div>
+    </>
   );
 }
 

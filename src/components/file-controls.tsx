@@ -3,9 +3,10 @@ import { Upload, Download } from 'lucide-react'
 
 interface FileControlsProps {
   onVideoSelect: (videoSrc: string) => void
+  onExport: () => Promise<void>
 }
 
-export function FileControls({ onVideoSelect }: FileControlsProps) {
+export function FileControls({ onVideoSelect, onExport }: FileControlsProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileSelect = () => {
@@ -21,8 +22,7 @@ export function FileControls({ onVideoSelect }: FileControlsProps) {
   }
 
   const handleExport = () => {
-    // TODO: Implement export functionality
-    console.log('Export clicked')
+    onExport()
   }
 
   return (
