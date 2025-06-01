@@ -1,14 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IPhoneMockup } from "@/components/iphone-mockup";
 import { Video } from "@/components/video";
 import { ColorPickerSidebar } from "@/components/color-picker-sidebar";
 import { FileControls } from "@/components/file-controls";
+import { VideoScrubber } from "@/components/video-scrubber";
 import { Logo } from "@/components/logo";
 
 function App() {
   const [currentVideoSrc, setCurrentVideoSrc] = useState("/ss.mp4");
   const [areSidebarsVisible, setAreSidebarsVisible] = useState(true);
   const [backgroundColor, setBackgroundColor] = useState("#ffffff");
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
@@ -78,18 +80,21 @@ function App() {
         <div className="flex justify-center items-center">
           <div className="w-full max-w-sm max-h-[90vh]">
             <IPhoneMockup className="w-full h-auto max-h-full">
-              <Video src={currentVideoSrc} />
+              <Video ref={videoRef} src={currentVideoSrc} />
             </IPhoneMockup>
           </div>
         </div>
 
-        {/* Right Sidebar - File Controls */}
+        {/* Right Sidebar - File Controls and Video Scrubber */}
         {areSidebarsVisible && (
-          <div className="flex flex-col items-end">
+          <div className="flex flex-col items-end space-y-4">
             {/* Spacer to match logo height + gap */}
             <div className="h-14"></div>
             <div className="w-full lg:w-auto flex justify-end">
               <FileControls onVideoSelect={handleVideoSelect} />
+            </div>
+            <div className="w-full lg:w-auto flex justify-end">
+              <VideoScrubber videoRef={videoRef} />
             </div>
           </div>
         )}
