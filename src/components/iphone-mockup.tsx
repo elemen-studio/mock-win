@@ -1,15 +1,20 @@
-import type { ReactNode } from 'react'
+import { forwardRef } from 'react';
+import type { ReactNode, ForwardedRef } from 'react';
 
 interface IPhoneMockupProps {
-  children: ReactNode
-  className?: string
+  children: ReactNode;
+  className?: string;
 }
 
-export function IPhoneMockup({ children, className = "" }: IPhoneMockupProps) {
+export const IPhoneMockup = forwardRef<SVGSVGElement, IPhoneMockupProps>(({ 
+  children, 
+  className = "" 
+}, ref: ForwardedRef<SVGSVGElement>) => {
   return (
     <div className={`relative ${className}`}>
       {/* iPhone mockup as base */}
       <svg 
+        ref={ref} 
         width="385" 
         height="785" 
         viewBox="0 0 385 785" 
@@ -75,4 +80,6 @@ export function IPhoneMockup({ children, className = "" }: IPhoneMockupProps) {
       </svg>
     </div>
   )
-} 
+});
+
+IPhoneMockup.displayName = 'IPhoneMockup';
