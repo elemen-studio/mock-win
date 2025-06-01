@@ -76,19 +76,19 @@ function App() {
       {/* Main App */}
       <div
         ref={appRef}
-        className="h-screen px-10 py-10 overflow-hidden flex items-center justify-center"
+        className="h-screen px-10 py-10 overflow-hidden"
         style={{ background: backgroundColor }}
       >
         <div
-          className={`w-full max-w-7xl grid ${
+          className={`h-full grid ${
             areSidebarsVisible
               ? "grid-cols-[300px_1fr_300px]"
               : "grid-cols-[1fr]"
-          } gap-4 lg:gap-8 items-center justify-items-center`}
+          } gap-4 lg:gap-8 items-start justify-center`}
         >
           {/* Left Sidebar - Color Picker */}
           {areSidebarsVisible && (
-            <div className="flex flex-col space-y-4 justify-self-start">
+            <div className="flex flex-col space-y-4">
               <div className="h-10">
                 <Logo />
               </div>
@@ -103,7 +103,7 @@ function App() {
 
           {/* Main Content Area - iPhone Mockup */}
           <div className="flex justify-center items-center">
-            <div className="w-full max-w-sm max-h-[70vh]">
+            <div className="w-full max-w-sm max-h-[90vh]">
               <IPhoneMockup className="w-full h-auto max-h-full">
                 <Video ref={videoRef} src={currentVideoSrc} />
               </IPhoneMockup>
@@ -112,7 +112,7 @@ function App() {
 
           {/* Right Sidebar - File Controls */}
           {areSidebarsVisible && (
-            <div className="flex flex-col items-end space-y-4 justify-self-end">
+            <div className="flex flex-col items-end space-y-4">
               {/* Spacer to match logo height + gap */}
               <div className="h-14"></div>
               <div className="w-80">
