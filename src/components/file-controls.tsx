@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { Upload } from 'lucide-react'
+import { Upload, Download } from 'lucide-react'
 
 interface FileControlsProps {
   onVideoSelect: (videoSrc: string) => void
@@ -20,6 +20,11 @@ export function FileControls({ onVideoSelect }: FileControlsProps) {
     }
   }
 
+  const handleExport = () => {
+    // TODO: Implement export functionality
+    console.log('Export clicked')
+  }
+
   return (
     <div className="bg-white rounded-lg border border-stroke font-jetbrains">
       {/* Header */}
@@ -28,13 +33,21 @@ export function FileControls({ onVideoSelect }: FileControlsProps) {
       </div>
 
       {/* Controls */}
-      <div className="p-4">
+      <div className="p-4 space-y-2">
         <button 
           onClick={handleFileSelect}
           className="w-full flex items-center gap-2 px-3 py-2 text-sm text-custom-2 hover:bg-hover-fill rounded-md transition-colors font-jetbrains"
         >
           <Upload size={16} />
           <span>Upload from device</span>
+        </button>
+        
+        <button 
+          onClick={handleExport}
+          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-custom-2 hover:bg-hover-fill rounded-md transition-colors font-jetbrains"
+        >
+          <Download size={16} />
+          <span>Export</span>
         </button>
       </div>
 

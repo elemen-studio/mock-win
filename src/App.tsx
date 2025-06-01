@@ -58,7 +58,7 @@ function App() {
       className="h-screen px-10 py-10 overflow-hidden"
       style={{ backgroundColor }}
     >
-      <div className="flex gap-4 lg:gap-8 items-start justify-center h-full">
+      <div className={`h-full grid ${areSidebarsVisible ? 'grid-cols-[300px_1fr_300px]' : 'grid-cols-[1fr]'} gap-4 lg:gap-8 items-start justify-center`}>
         {/* Left Sidebar - Color Picker */}
         {areSidebarsVisible && (
           <div className="flex flex-col">
@@ -75,7 +75,7 @@ function App() {
         )}
 
         {/* Main Content Area - iPhone Mockup */}
-        <div className="flex-1 flex justify-center items-center">
+        <div className="flex justify-center items-center">
           <div className="w-full max-w-sm max-h-[90vh]">
             <IPhoneMockup className="w-full h-auto max-h-full">
               <Video src={currentVideoSrc} />
@@ -85,10 +85,10 @@ function App() {
 
         {/* Right Sidebar - File Controls */}
         {areSidebarsVisible && (
-          <div className="flex flex-col">
+          <div className="flex flex-col items-end">
             {/* Spacer to match logo height + gap */}
             <div className="h-14"></div>
-            <div className="w-full lg:w-auto flex justify-center lg:justify-start">
+            <div className="w-full lg:w-auto flex justify-end">
               <FileControls onVideoSelect={handleVideoSelect} />
             </div>
           </div>
