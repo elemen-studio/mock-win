@@ -1,12 +1,14 @@
 import React, { useRef } from 'react'
-import { Upload, Download } from 'lucide-react'
+import { Upload, Download, Video as VideoIcon } from 'lucide-react'
+import type { RecordingProgress } from '@/hooks/use-recording'
 
 interface FileControlsProps {
   onVideoSelect: (videoSrc: string) => void
   onExport?: () => Promise<void>
+  recordingProgress?: RecordingProgress
 }
 
-export function FileControls({ onVideoSelect, onExport }: FileControlsProps) {
+export function FileControls({ onVideoSelect, onExport, recordingProgress }: FileControlsProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileSelect = () => {
@@ -22,7 +24,7 @@ export function FileControls({ onVideoSelect, onExport }: FileControlsProps) {
   }
 
   const handleExport = async () => {
-    if (onExport) {
+    if (onExport && !recordingProgress?.isRecording) {
       try {
         await onExport()
       } catch (error) {
@@ -43,6 +45,7 @@ export function FileControls({ onVideoSelect, onExport }: FileControlsProps) {
         <button 
           onClick={handleFileSelect}
           className="w-full flex items-center gap-2 px-3 py-2 text-sm text-custom-2 hover:bg-hover-fill rounded-md transition-colors font-jetbrains"
+          disabled={recordingProgress?.isRecording}
         >
           <Upload size={16} />
           <span>Upload from device</span>
@@ -50,13 +53,30 @@ export function FileControls({ onVideoSelect, onExport }: FileControlsProps) {
         
         <button 
           onClick={handleExport}
-          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-custom-2 hover:bg-hover-fill rounded-md transition-colors font-jetbrains"
-          disabled={!onExport}
+          className={`w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors font-jetbrains ${
+            recordingProgress?.isRecording 
+              ? 'bg-red-100 text-red-600 cursor-not-allowed' 
+              : 'text-custom-2 hover:bg-hover-fill'
+          }`}
+          disabled={recordingProgress?.isRecording || !onExport}
         >
-          <Download size={16} />
-          <span>Export Video</span>
+          {recordingProgress?.isRecording ? (
+            <VideoIcon size={16} className="animate-pulse" />
+          ) : (
+            <Download size={16} />
+          )}
+          <span>{recordingProgress?.isRecording ? 'Recording...' : 'Export Video'}</span>
         </button>
       </div>
+
+      {/* Status Message */}
+      {recordingProgress?.status && (
+        <div className="px-4 pb-2">
+          <div className="text-xs text-custom-3 font-jetbrains bg-hover-fill rounded px-2 py-1 text-center">
+            {recordingProgress.status}
+          </div>
+        </div>
+      )}
 
       {/* Keyboard Shortcut Hint */}
       <div className="px-4 pb-4">
