@@ -90,7 +90,7 @@ function App() {
             areSidebarsVisible
               ? "grid-cols-[300px_1fr_300px]"
               : "grid-cols-[1fr]"
-          } gap-4 lg:gap-8 items-start justify-center`}
+          } gap-4 lg:gap-8 items-center justify-center`}
         >
           {/* Left Sidebar - Color Picker */}
           {areSidebarsVisible && (
@@ -118,7 +118,7 @@ function App() {
 
           {/* Right Sidebar - File Controls */}
           {areSidebarsVisible && (
-            <div className="flex flex-col items-end space-y-4">
+            <div className="flex flex-col h-full justify-center items-center space-y-4">
               {/* Spacer to match logo height + gap */}
               <div className="h-14"></div>
               <div className="w-80">
@@ -131,6 +131,7 @@ function App() {
               <div className="w-80">
                 <SocialsSection />
               </div>
+              <div className="h-75"></div>
             </div>
           )}
         </div>
