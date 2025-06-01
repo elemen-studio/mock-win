@@ -1,0 +1,58 @@
+import React, { useRef } from 'react'
+import { Upload } from 'lucide-react'
+
+interface FileControlsProps {
+  onVideoSelect: (videoSrc: string) => void
+}
+
+export function FileControls({ onVideoSelect }: FileControlsProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileSelect = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      const videoUrl = URL.createObjectURL(file)
+      onVideoSelect(videoUrl)
+    }
+  }
+
+  return (
+    <div className="bg-white rounded-lg border border-stroke font-jetbrains">
+      {/* Header */}
+      <div className="p-4 border-b border-stroke">
+        <h2 className="text-lg font-semibold text-accent font-inter">File Controls</h2>
+      </div>
+
+      {/* Controls */}
+      <div className="p-4">
+        <button 
+          onClick={handleFileSelect}
+          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-custom-2 hover:bg-hover-fill rounded-md transition-colors font-jetbrains"
+        >
+          <Upload size={16} />
+          <span>Upload from device</span>
+        </button>
+      </div>
+
+      {/* Keyboard Shortcut Hint */}
+      <div className="px-4 pb-4">
+        <div className="text-xs text-custom-3 font-jetbrains">
+          Press <kbd className="bg-hover-fill px-1.5 py-0.5 rounded text-custom-2">⌘ K</kbd> to toggle controls
+        </div>
+      </div>
+
+      {/* Hidden File Input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="video/*"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+    </div>
+  );
+} 

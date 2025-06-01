@@ -1,6 +1,48 @@
 @import "tailwindcss";
 
-/* JetBrains Mono font configuration */
+/* Custom Color Variables */
+:root {
+  --color-text-1: #000;
+  --color-text-2: #1c1c1c;
+  --color-text-3: #919191;
+  --color-hover-fill: #eee;
+  --color-profile-bg: #3e3e3e;
+  --color-profile-input: #5f5f5f;
+  --color-stroke: #e0e0e0;
+  --color-accent: #ff6a00;
+}
+
+/* Custom Tailwind Color Classes */
+.text-custom-1 { color: var(--color-text-1); }
+.text-custom-2 { color: var(--color-text-2); }
+.text-custom-3 { color: var(--color-text-3); }
+.bg-hover-fill { background-color: var(--color-hover-fill); }
+.bg-profile { background-color: var(--color-profile-bg); }
+.bg-profile-input { background-color: var(--color-profile-input); }
+.border-stroke { border-color: var(--color-stroke); }
+.text-accent { color: var(--color-accent); }
+.bg-accent { background-color: var(--color-accent); }
+.hover\:bg-hover-fill:hover { background-color: var(--color-hover-fill); }
+
+/* Apply JetBrains Mono font globally */
+* {
+  font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+body {
+  font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+/* JetBrains Mono font configuration class */
 .font-jetbrains {
   font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+/* Orbitron font configuration class */
+.font-orbitron {
+  font-family: 'Orbitron', 'Arial', sans-serif;
+}
+
+.font-inter {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }

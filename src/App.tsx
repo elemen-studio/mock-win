@@ -1,65 +1,99 @@
 import { useState, useEffect } from "react";
 import { IPhoneMockup } from "@/components/iphone-mockup";
 import { Video } from "@/components/video";
-import { ControlBar } from "@/components/control-bar";
+import { ColorPickerSidebar } from "@/components/color-picker-sidebar";
+import { FileControls } from "@/components/file-controls";
+import { Logo } from "@/components/logo";
 
 function App() {
   const [currentVideoSrc, setCurrentVideoSrc] = useState("/ss.mp4");
-  const [isControlBarVisible, setIsControlBarVisible] = useState(true);
+  const [areSidebarsVisible, setAreSidebarsVisible] = useState(true);
+  const [backgroundColor, setBackgroundColor] = useState("#ffffff");
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
       // Prevent shortcuts when typing in inputs
-      if ((event.target as HTMLElement)?.tagName === 'INPUT' || 
-          (event.target as HTMLElement)?.tagName === 'TEXTAREA') {
+      if (
+        (event.target as HTMLElement)?.tagName === "INPUT" ||
+        (event.target as HTMLElement)?.tagName === "TEXTAREA"
+      ) {
         return;
       }
 
-      // Cmd+K or Ctrl+K to toggle control bar
-      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+      // Cmd+K or Ctrl+K to toggle sidebars
+      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
         event.preventDefault();
         event.stopPropagation();
-        setIsControlBarVisible(prev => !prev);
+        setAreSidebarsVisible((prev) => !prev);
         return;
       }
 
-      // ESC to close control bar (only when visible)
-      if (event.key === 'Escape' && isControlBarVisible) {
+      // ESC to hide sidebars (only when visible)
+      if (event.key === "Escape" && areSidebarsVisible) {
         event.preventDefault();
         event.stopPropagation();
-        setIsControlBarVisible(false);
+        setAreSidebarsVisible(false);
         return;
       }
     };
 
-    document.addEventListener('keydown', handleKeydown, true);
+    document.addEventListener("keydown", handleKeydown, true);
 
     return () => {
-      document.removeEventListener('keydown', handleKeydown, true);
+      document.removeEventListener("keydown", handleKeydown, true);
     };
-  }, [isControlBarVisible]);
+  }, [areSidebarsVisible]);
 
   const handleVideoSelect = (videoSrc: string) => {
     setCurrentVideoSrc(videoSrc);
-    setIsControlBarVisible(false);
   };
 
-  const handleCloseControlBar = () => {
-    setIsControlBarVisible(false);
+  const handleColorSelect = (color: string) => {
+    console.log(color);
+    setBackgroundColor(color);
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen px-4 py-4">
-      <div className="w-full max-w-sm max-h-[90vh] flex justify-center items-center">
-        <IPhoneMockup className="w-full h-auto max-h-full">
-          <Video src={currentVideoSrc} />
-        </IPhoneMockup>
+    <div
+      className="h-screen px-10 py-10 overflow-hidden"
+      style={{ backgroundColor }}
+    >
+      <div className="flex gap-4 lg:gap-8 items-start justify-center h-full">
+        {/* Left Sidebar - Color Picker */}
+        {areSidebarsVisible && (
+          <div className="flex flex-col">
+            <div className="h-10 mb-4">
+              <Logo />
+            </div>
+            <div className="w-full lg:w-auto flex justify-center lg:justify-start">
+              <ColorPickerSidebar
+                onColorSelect={handleColorSelect}
+                selectedColor={backgroundColor}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Main Content Area - iPhone Mockup */}
+        <div className="flex-1 flex justify-center items-center">
+          <div className="w-full max-w-sm max-h-[90vh]">
+            <IPhoneMockup className="w-full h-auto max-h-full">
+              <Video src={currentVideoSrc} />
+            </IPhoneMockup>
+          </div>
+        </div>
+
+        {/* Right Sidebar - File Controls */}
+        {areSidebarsVisible && (
+          <div className="flex flex-col">
+            {/* Spacer to match logo height + gap */}
+            <div className="h-14"></div>
+            <div className="w-full lg:w-auto flex justify-center lg:justify-start">
+              <FileControls onVideoSelect={handleVideoSelect} />
+            </div>
+          </div>
+        )}
       </div>
-      <ControlBar 
-        isVisible={isControlBarVisible}
-        onClose={handleCloseControlBar}
-        onVideoSelect={handleVideoSelect}
-      />
     </div>
   );
 }
