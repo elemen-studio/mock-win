@@ -1,3 +1,5 @@
+import React, { forwardRef } from 'react';
+
 interface VideoProps {
   src: string
   autoPlay?: boolean
@@ -7,16 +9,17 @@ interface VideoProps {
   className?: string
 }
 
-export function Video({ 
+export const Video = forwardRef<HTMLVideoElement, VideoProps>(({ 
   src, 
   autoPlay = true, 
   loop = true, 
   muted = true, 
   playsInline = true,
   className = ""
-}: VideoProps) {
+}, ref) => {
   return (
     <video 
+      ref={ref}
       src={src}
       autoPlay={autoPlay}
       loop={loop}
@@ -30,4 +33,4 @@ export function Video({
       }}
     />
   )
-} 
+}) 
