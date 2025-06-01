@@ -1,14 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IPhoneMockup } from "@/components/iphone-mockup";
 import { Video } from "@/components/video";
 import { ColorPickerSidebar } from "@/components/color-picker-sidebar";
 import { FileControls } from "@/components/file-controls";
 import { Logo } from "@/components/logo";
+import { useScreenRecorder } from "@/hooks/useRecording";
 
 function App() {
   const [currentVideoSrc, setCurrentVideoSrc] = useState("/ss.mp4");
   const [areSidebarsVisible, setAreSidebarsVisible] = useState(true);
   const [backgroundColor, setBackgroundColor] = useState("#ffffff");
+  
+  const appRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const { exportRecording } = useScreenRecorder({
+    appContainerRef: appRef,
+    videoRef: videoRef,
+    setAreSidebarsVisible: setAreSidebarsVisible,
+  });
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) => {
@@ -55,6 +65,7 @@ function App() {
 
   return (
     <div
+      ref={appRef}
       className="h-screen px-10 py-10 overflow-hidden"
       style={{ backgroundColor }}
     >
@@ -78,7 +89,7 @@ function App() {
         <div className="flex justify-center items-center">
           <div className="w-full max-w-sm max-h-[90vh]">
             <IPhoneMockup className="w-full h-auto max-h-full">
-              <Video src={currentVideoSrc} />
+              <Video ref={videoRef} src={currentVideoSrc} />
             </IPhoneMockup>
           </div>
         </div>
@@ -89,7 +100,10 @@ function App() {
             {/* Spacer to match logo height + gap */}
             <div className="h-14"></div>
             <div className="w-full lg:w-auto flex justify-end">
-              <FileControls onVideoSelect={handleVideoSelect} />
+              <FileControls 
+                onVideoSelect={handleVideoSelect} 
+                onExport={exportRecording}
+              />
             </div>
           </div>
         )}
