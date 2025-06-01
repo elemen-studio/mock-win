@@ -65,7 +65,7 @@ export function FileControls({ onVideoSelect, onExport, recordingProgress }: Fil
           ) : (
             <Download size={16} />
           )}
-          <span>{recordingProgress?.isRecording ? 'Recording...' : 'Export Video'}</span>
+          <span>{recordingProgress?.isRecording ? 'Recording...' : 'Export video'}</span>
         </button>
       </div>
 

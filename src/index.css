@@ -16,6 +16,7 @@
 .text-custom-1 { color: var(--color-text-1); }
 .text-custom-2 { color: var(--color-text-2); }
 .text-custom-3 { color: var(--color-text-3); }
+.bg-custom-3 { background-color: var(--color-text-3); }
 .bg-hover-fill { background-color: var(--color-hover-fill); }
 .bg-profile { background-color: var(--color-profile-bg); }
 .bg-profile-input { background-color: var(--color-profile-input); }
