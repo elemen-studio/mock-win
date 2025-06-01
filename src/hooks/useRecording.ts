@@ -1,8 +1,5 @@
 import { useCallback } from 'react';
 
-const BUFFER_DURATION = 3000; // 3 seconds in milliseconds
-const FPS = 60; // Increased to 60 FPS
-
 interface UseScreenRecorderProps {
   appContainerRef: React.RefObject<HTMLElement | null>;
   videoRef: React.RefObject<HTMLVideoElement | null>;
@@ -47,11 +44,10 @@ export function useScreenRecorder({
       canvas.height = rect.height;
       console.log(`Canvas size: ${canvas.width}x${canvas.height}`);
 
-      // Create MediaRecorder from canvas stream at 60 FPS
-      const stream = canvas.captureStream(FPS);
+      // Create MediaRecorder from canvas stream (like HTML file - 30 FPS)
+      const stream = canvas.captureStream(30);
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'video/webm;codecs=vp9',
-        videoBitsPerSecond: Math.max(8_000_000, canvas.width * canvas.height * 2) // Higher bitrate for 60 FPS
+        mimeType: 'video/webm;codecs=vp9'
       });
 
       const chunks: Blob[] = [];
@@ -69,7 +65,7 @@ export function useScreenRecorder({
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `mockup-export-60fps-${Date.now()}.webm`;
+        a.download = `mockup-export-${Date.now()}.webm`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -85,32 +81,27 @@ export function useScreenRecorder({
         setAreSidebarsVisible(true);
       };
 
-      // Function to draw frames to canvas
+      // Function to draw frames to canvas (similar to HTML file)
       const drawFrame = async () => {
         try {
+          // Capture the app container background (like SVG in HTML file)
           const html2canvas = (await import('html2canvas')).default;
-          
           const capturedCanvas = await html2canvas(appContainer, {
             useCORS: true,
             allowTaint: true,
-            scale: window.devicePixelRatio || 1, // Use device pixel ratio for crisp capture
             backgroundColor: null,
             logging: false,
             width: rect.width,
             height: rect.height,
             ignoreElements: (element) => element.tagName === 'VIDEO',
-            // Ensure we capture CSS styles including border-radius
-            foreignObjectRendering: true,
-            imageTimeout: 0,
-            removeContainer: true
           });
 
-          // Draw captured content (this includes the iPhone mockup with border radius)
+          // Draw captured content (background)
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           ctx.drawImage(capturedCanvas, 0, 0, canvas.width, canvas.height);
           
-          // Draw video manually with proper clipping to match iPhone mockup
-          if (video && video.videoWidth > 0 && video.videoHeight > 0) {
+          // Draw video manually with proper clipping (like HTML file approach)
+          if (video && video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
             const videoRect = video.getBoundingClientRect();
             const appRect = appContainer.getBoundingClientRect();
             
@@ -122,7 +113,7 @@ export function useScreenRecorder({
             // Save context state
             ctx.save();
             
-            // Create clipping path to match the iPhone mockup border radius (52px)
+            // Create clipping path to match the iPhone mockup border radius
             const borderRadius = 52;
             ctx.beginPath();
             ctx.roundRect(videoX, videoY, videoWidth, videoHeight, borderRadius);
@@ -139,39 +130,32 @@ export function useScreenRecorder({
         }
       };
 
-      // Start recording
-      mediaRecorder.start();
-      console.log('MediaRecorder started at 60 FPS');
-
-      // Initial buffer
-      console.log('Starting buffer period...');
-      await new Promise(resolve => setTimeout(resolve, BUFFER_DURATION));
-
-      // Start video
-      video.currentTime = 0;
-      await video.play();
-      console.log('Video started playing');
-
-      // Recording loop at 60 FPS
-      const frameInterval = 1000 / FPS; // ~16.67ms for 60 FPS
-      const videoDuration = video.duration * 1000;
-      const totalDuration = videoDuration + BUFFER_DURATION;
-      
-      let startTime = Date.now();
-      const recordingLoop = async () => {
-        const elapsed = Date.now() - startTime;
-        
-        if (elapsed < totalDuration) {
-          await drawFrame();
-          setTimeout(recordingLoop, frameInterval);
-        } else {
-          console.log('Recording duration completed, stopping...');
-          mediaRecorder.stop();
+      // Recording loop (like HTML file)
+      let isRecording = true;
+      const drawFramesContinuously = () => {
+        if (isRecording) {
+          drawFrame();
+          requestAnimationFrame(drawFramesContinuously);
         }
       };
 
-      // Start the recording loop
-      recordingLoop();
+      // Start recording (like HTML file)
+      video.currentTime = 0;
+      await video.play();
+      mediaRecorder.start();
+      console.log('MediaRecorder started');
+
+      // Start drawing frames continuously
+      drawFramesContinuously();
+
+      // Stop recording when video ends or after 10 seconds (like HTML file)
+      const maxDuration = Math.min(video.duration * 1000, 10000);
+      setTimeout(() => {
+        isRecording = false;
+        mediaRecorder.stop();
+        video.pause();
+        console.log('Recording stopped after', maxDuration, 'ms');
+      }, maxDuration);
 
     } catch (error) {
       console.error('Error during screen recording:', error);
