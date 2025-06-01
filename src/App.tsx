@@ -76,7 +76,7 @@ function App() {
       <div
         ref={appRef}
         className="h-screen px-10 py-10 overflow-hidden"
-        style={{ backgroundColor }}
+        style={{ background: backgroundColor }}
       >
         <div className={`h-full grid ${areSidebarsVisible ? 'grid-cols-[300px_1fr_300px]' : 'grid-cols-[1fr]'} gap-4 lg:gap-8 items-start justify-center`}>
           {/* Left Sidebar - Color Picker */}
