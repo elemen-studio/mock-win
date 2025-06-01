@@ -5,6 +5,7 @@ import { ColorPickerSidebar } from "@/components/color-picker-sidebar";
 import { SocialsSection } from "@/components/socials-section";
 import { FileControls } from "@/components/file-controls";
 import { Logo } from "@/components/logo";
+import { SmallScreenMessage } from "@/components/small-screen-message";
 import { useScreenRecorder } from "@/hooks/use-recording";
 import { RecordingProgress } from "./components/recording-progress";
 
@@ -67,16 +68,21 @@ function App() {
 
   return (
     <>
+      {/* Small Screen Message - Show on very small screens */}
+      <div className="block sm:hidden">
+        <SmallScreenMessage />
+      </div>
+
       {/* Fixed Progress Bar Overlay */}
       <RecordingProgress
         progress={recordingProgress.progress}
         isRecording={recordingProgress.isRecording}
       />
 
-      {/* Main App */}
+      {/* Main App - Hide on very small screens */}
       <div
         ref={appRef}
-        className="h-screen px-10 py-10 overflow-hidden"
+        className="hidden sm:block h-screen px-10 py-10 overflow-hidden"
         style={{ background: backgroundColor }}
       >
         <div
